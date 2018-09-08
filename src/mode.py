@@ -21,7 +21,7 @@ class mode():
             self.SERVO = False
         self.motor.updateMotor(self.SERVO)
 
-        if int(self.vehicle.channels['7']) > 1800 and self.vehicle.mode.name=='ALTHOLD':
+        if int(self.vehicle.channels['7']) > 1800 and self.vehicle.mode.name=='ALT_HOLD':
             self.ROCKING_WINGS = True
             self.CAMERA = False
         elif int(self.vehicle.channels['7']) < 1400:
@@ -35,8 +35,6 @@ class mode():
             self.RCSAFETY = True
         else:
             self.RCSAFETY = False
-        
-        print(self.SERVO,time.time())
 
     def getMode(self):
         return self.SERVO,self.ROCKING_WINGS,self.CAMERA,self.RCSAFETY

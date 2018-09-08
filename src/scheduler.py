@@ -11,9 +11,9 @@ class Scheduler():
         self.step_time=step_time
         self.function=function
         self.count=0
-        #スレッドの作成と開始
+        self.state=0
+        #スレッドの作成
         self.thread = threading.Thread(target = self.run)
-        self.thread.start()
         
 
     def run(self):
@@ -24,10 +24,15 @@ class Scheduler():
             self.thread=threading.Timer(self.step_time,self.run)
             self.thread.start()
 
+    def start(self):
+        self.state=1
+        self.thread.start()
+
     def stop(self):
         """スレッドを停止させる"""
         self.stop_event.set()
         self.thread.join()    #スレッドが停止するのを待つ
+        self.state=0
 
     def inc(self):
         self.inc_event.set()

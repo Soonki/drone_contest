@@ -18,7 +18,7 @@ while(True):
     
     ret, frame = cap.read()
     
-    path = "fig/photo" + str(i) + ".jpg"
+    path = "fig/photo" + str(i+200) + ".jpg"
     print(path)
     cv2.imwrite(path,frame)
 

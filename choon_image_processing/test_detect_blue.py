@@ -19,7 +19,7 @@ while(True):
     cam_hsv = cv2.cvtColor(frame, cv2.COLOR_BGR2HSV)
 
     # 特定の色だけのマスクを作る
-    cam_hsv = cv2.inRange(cam_hsv, (80,50,0), (160,255,255))
+    cam_hsv = cv2.inRange(cam_hsv, (70,0,0), (180,255,255))
     #cv2.imshow('preview', cam_hsv)
     # オリジナルの画像をコピーし、マスクされている部分を0にする（黒くする）
     cam_color = frame.copy()
@@ -45,7 +45,7 @@ while(True):
 
     for j in range(len(contours)):
         area = cv2.contourArea(contours[j])
-        if max_area<area and area > 50:
+        if max_area<area and area > 30:
             max_area=area
             max_area_countor=j
 
