@@ -52,6 +52,10 @@ Pixracer、Raspberry Pi、LED、カメラを正しく配線した上でRaspberry
 python src/main.py
 ```
 
+## Test
+
+ユニットテストは未実装である。各クラスの機能テストのみ実装している。testフォルダ内のフォルダ及びクラスを定義しているファイルを直接実行することで機能テストを実行できる。
+
 ## Branch
 
 `Git-flow` を採用している。
