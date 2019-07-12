@@ -59,3 +59,7 @@ python src/main.py
 ## Branch
 
 `Git-flow` を採用している。
+
+## Setting
+
+飛行ロボコンのプロポ設定は3に保存している
