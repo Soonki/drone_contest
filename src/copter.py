@@ -8,7 +8,7 @@ from detect import detect
 from scheduler import Scheduler
 from rocking_wings import rocking_wings
 from led import led
-
+from streaming import stream
 class copter():
 
     def setup(self):
@@ -16,6 +16,7 @@ class copter():
         self.vehicle = connect('/dev/ttyS0', wait_ready=True,baud=57600,rate=2,use_native=True,heartbeat_timeout=-1)
         self.MODE=mode(self.vehicle)
         self.CAMERA=detect()
+        self.stream=stream()
         self.led=led()
         self.ROCK=rocking_wings(self.vehicle)
         self.count=0
@@ -35,6 +36,7 @@ class copter():
         self.vehicle = connect('/dev/ttyS0', wait_ready=True,baud=57600,rate=2,use_native=True,heartbeat_timeout=-1)
         self.MODE=mode(self.vehicle)
         self.CAMERA=detect()
+        self.stream=stream()
         self.led=led()
         self.ROCK=rocking_wings(self.vehicle)
         self.count=0
@@ -54,10 +56,12 @@ class copter():
 
         if self.MODE.CAMERA==True and self.MODE.ROCKING_WINGS==False:
             #detect circle and square
-            self.RED_CIRCLE,self.BLUE_SQUARE=self.CAMERA.detect_all()
-            self.led.blink(self.RED_CIRCLE,self.BLUE_SQUARE)
+            #self.RED_CIRCLE,self.BLUE_SQUARE=self.CAMERA.detect_all()
+            #self.led.blink(self.RED_CIRCLE,self.BLUE_SQUARE)
+            self.stream.start()
 
         if self.MODE.CAMERA==False and self.MODE.ROCKING_WINGS==False:
+            self.stream.end()
             self.led.off_both()
 
         if self.MODE.CAMERA==False and self.MODE.ROCKING_WINGS==True and self.rock_thread.state==0:
@@ -103,10 +107,12 @@ class copter():
 
         if self.MODE.CAMERA==True and self.MODE.ROCKING_WINGS==False:
             #detect circle and square
-            self.RED_CIRCLE,self.BLUE_SQUARE=self.CAMERA.detect_all()
-            self.led.blink(self.RED_CIRCLE,self.BLUE_SQUARE)
+            #self.RED_CIRCLE,self.BLUE_SQUARE=self.CAMERA.detect_all()
+            #self.led.blink(self.RED_CIRCLE,self.BLUE_SQUARE)
+            self.stream.start()
 
         if self.MODE.CAMERA==False and self.MODE.ROCKING_WINGS==False:
+            self.stream.end()
             self.led.off_both()
 
         if self.MODE.CAMERA==False and self.MODE.ROCKING_WINGS==True and self.rock_thread.state==0:

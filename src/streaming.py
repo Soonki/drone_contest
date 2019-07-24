@@ -11,26 +11,28 @@ class stream():
     def __init__(self):
         self.camera_flag=0
     def start(self):
-        #cmd = "sh start_server.sh"
-        cmd= "/usr/local/bin/mjpg_streamer -i \"input_raspicam.so -x 640 -y 480 -fps 15 -q 80\" -o \"output_http.so -p 8080 -w /usr/local/share/mjpg-streamer/www\" -b"
-        #https://qiita.com/ego/items/3d23cda713f29f0dd141
-        cmd = shlex.split(cmd)
-        ret = subprocess.check_output(cmd)
-        print(ret)
-        print("streaming start!")
-        self.camera_flag=1
+        if self.camera_flag==0:
+            #cmd = "sh start_server.sh"
+            cmd= "/usr/local/bin/mjpg_streamer -i \"input_raspicam.so -x 640 -y 480 -fps 15 -q 80\" -o \"output_http.so -p 8080 -w /usr/local/share/mjpg-streamer/www\" -b"
+            #https://qiita.com/ego/items/3d23cda713f29f0dd141
+            cmd = shlex.split(cmd)
+            ret = subprocess.check_output(cmd)
+            print(ret)
+            print("streaming start!")
+            self.camera_flag=1
     def end(self):
-        #cmd="sh end_server.sh"
-        cmd2="pidof mjpg_streamer"
-        cmd2 = shlex.split(cmd2)
-        ret2 = subprocess.check_output(cmd2)
-        print(ret2)
-        cmd="kill -9 "+ret2
-        cmd = shlex.split(cmd)
-        ret = subprocess.check_output(cmd)
-        print(ret)
-        print("end streaming")
-        self.camera_flag=0
+        if self.camera_flag==1:
+            #cmd="sh end_server.sh"
+            cmd2="pidof mjpg_streamer"
+            cmd2 = shlex.split(cmd2)
+            ret2 = subprocess.check_output(cmd2)
+            print(ret2)
+            cmd="kill -9 "+ret2
+            cmd = shlex.split(cmd)
+            ret = subprocess.check_output(cmd)
+            print(ret)
+            print("end streaming")
+            self.camera_flag=0
 
 
 if __name__ == '__main__':
