@@ -13,7 +13,7 @@ class copter():
 
     def setup(self):
         print("Connecting")
-        self.vehicle = connect('/dev/ttyS0', wait_ready=True,baud=57600,rate=2,use_native=True,heartbeat_timeout=-1)        
+        self.vehicle = connect('/dev/ttyS0', wait_ready=True,baud=57600,rate=2,use_native=True,heartbeat_timeout=-1)
         self.MODE=mode(self.vehicle)
         self.CAMERA=detect()
         self.led=led()
@@ -32,7 +32,7 @@ class copter():
 
     def setup_read_motion(self):
         print("Connecting")
-        self.vehicle = connect('/dev/ttyS0', wait_ready=True,baud=57600,rate=2,use_native=True,heartbeat_timeout=-1)        
+        self.vehicle = connect('/dev/ttyS0', wait_ready=True,baud=57600,rate=2,use_native=True,heartbeat_timeout=-1)
         self.MODE=mode(self.vehicle)
         self.CAMERA=detect()
         self.led=led()
@@ -50,7 +50,7 @@ class copter():
         self.led.flash_second(3)
 
     def loop(self):
-        t=time.time()        
+        t=time.time()
 
         if self.MODE.CAMERA==True and self.MODE.ROCKING_WINGS==False:
             #detect circle and square
@@ -76,13 +76,13 @@ class copter():
             #self.vehicle.channels.overrides['3']=950
             self.vehicle.armed=False
             self.count=self.count+1
-    
+
         if self.count>self.flag_count:
             self.flag=True
         #print(time.time()-t)
         if time.time()-t<self.dt:
             time.sleep(self.dt-time.time()+t)
-        
+
         return self.flag
 
     def end(self):
@@ -91,7 +91,7 @@ class copter():
         self.mode_thread.stop()
         if self.rock_thread.state==1:
             self.rock_thread.stop()
-            
+
         if len(self.ROCK.motion_read_data) > 3:
             self.ROCK.save_motion()
         self.vehicle.close()
@@ -99,7 +99,7 @@ class copter():
         print("Completed")
 
     def loop_read_motion(self):
-        t=time.time()        
+        t=time.time()
 
         if self.MODE.CAMERA==True and self.MODE.ROCKING_WINGS==False:
             #detect circle and square
@@ -124,13 +124,13 @@ class copter():
             #self.vehicle.channels.overrides['3']=950
             self.vehicle.armed=False
             self.count=self.count+1
-    
+
         if self.count>self.flag_count:
             self.flag=True
         #print(time.time()-t)
         if time.time()-t<self.dt:
             time.sleep(self.dt-time.time()+t)
-        
+
         return self.flag
 
     def end(self):
@@ -139,12 +139,23 @@ class copter():
         self.mode_thread.stop()
         if self.rock_thread.state==1:
             self.rock_thread.stop()
-            
+
         if len(self.ROCK.motion_read_data) > 3:
             self.ROCK.save_motion()
         self.vehicle.close()
         self.CAMERA.cam.release()
         print("Completed")
+
+    def output_mode(self):
+        mode_list={"CAMERA":self.MODE.CAMERA,"ROCKING_WINGS":self.MODE.ROCKING_WINGS,"RCSAFETY":self.MODE.RCSAFETY,"SERVO":self.MODE.SERVO}
+        output_str="Now mode:\n"
+        for i in mode_list:
+            if mode_list[i]==True:
+                output_str=output_str+i+":1\n"
+            else:
+                pass
+        print(output_str)
+
 
 
 if __name__=="__main__":
