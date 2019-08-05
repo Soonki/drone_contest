@@ -28,7 +28,7 @@ class copter():
         self.mode_thread=Scheduler(self.MODE.updateMode,0.5)
         self.rock_thread=Scheduler(self.ROCK.run,0.25)
         self.mode_thread.start()
-        print("Complite Initial Setup")
+        print("Complete Initial Setup")
         self.led.flash_second(3)
 
     def setup_read_motion(self):
@@ -48,7 +48,7 @@ class copter():
         self.mode_thread=Scheduler(self.MODE.updateMode,0.5)
         self.rock_thread=Scheduler(self.ROCK.read_motion,0.25)
         self.mode_thread.start()
-        print("Complite Initial Setup")
+        print("Complete Initial Setup")
         self.led.flash_second(3)
 
     def loop(self):
@@ -77,8 +77,6 @@ class copter():
             self.rock_thread=Scheduler(self.ROCK.run,0.25)
 
         if self.MODE.RCSAFETY == 1:
-            #self.vehicle.channels.overrides['3']=950
-            self.vehicle.armed=False
             self.count=self.count+1
 
         if self.count>self.flag_count:
@@ -91,6 +89,7 @@ class copter():
 
     def end(self):
         print("End Start")
+        self.vehicle.channels.overrides = {"3" : 500,"1" : 500}
         self.led.flash_second(3)
         self.mode_thread.stop()
         if self.rock_thread.state==1:
@@ -99,9 +98,8 @@ class copter():
         if len(self.ROCK.motion_read_data) > 3:
             self.ROCK.save_motion()
         self.vehicle.close()
-        self.CAMERA.cam.release()
+        #self.CAMERA.cam.release()
         print("Completed")
-
     def loop_read_motion(self):
         t=time.time()
 
@@ -127,8 +125,6 @@ class copter():
             self.rock_thread=Scheduler(self.ROCK.read_motion,0.25)
 
         if self.MODE.RCSAFETY == 1:
-            #self.vehicle.channels.overrides['3']=950
-            self.vehicle.armed=False
             self.count=self.count+1
 
         if self.count>self.flag_count:
@@ -141,6 +137,7 @@ class copter():
 
     def end(self):
         print("End Start")
+        self.vehicle.channels.overrides = {"3" : 500,"1" : 500}
         self.led.flash_second(3)
         self.mode_thread.stop()
         if self.rock_thread.state==1:
@@ -161,6 +158,8 @@ class copter():
             else:
                 pass
         print(output_str)
+
+
 
 
 

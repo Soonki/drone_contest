@@ -22,6 +22,7 @@ class servo():
 
     def upMotor(self):
         self.pi.hardware_PWM(self.gpio_pin0, 50, self.pos_max)
+        self.vehicle.channels.overrides['3']=900
 
     def downMotor(self):
         self.pi.hardware_PWM(self.gpio_pin0, 50, self.pos_min)
@@ -29,8 +30,7 @@ class servo():
     def updateMotor(self,flag):
         if flag == 0:
             self.upMotor()
-        else:
-            self.downMotor()
+        else:            self.downMotor()
 
 
 if __name__ == '__main__':
