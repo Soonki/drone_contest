@@ -7,13 +7,15 @@ import time
 import threading
 #2019/07/10作成．カメラをブラウザでストリーミングできるようにするテスト
 #カメラ画像はhttp://ラズパイのIP/stream.htmlで見れる(fingを使え)
+#bonjour使ってたらhttp://raspberrypi.local:8080/stream.htmlで見れる
 class stream():
 	def __init__(self):
 		self.camera_flag=0
 	def start(self):
 		#cmd = "sh start_server.sh" 
-		cmd = "/usr/local/bin/mjpg_streamer -i \"input_raspicam.so -x 640 -y 480 -fps 15 -q 80\" -o \"output_http.so -p 8080 -w /usr/local/share/mjpg-streamer/www\" -b"
-		#-bでバックグラウンドで実行
+		#cmd = "/usr/local/bin/mjpg_streamer -i \"input_raspicam.so -x 640 -y 480 -fps 15 -q 80\" -o \"output_http.so -p 8080 -w /usr/local/share/mjpg-streamer/www\" -b"
+		cmd = "/usr/local/bin/mjpg_streamer -i \"input_raspicam.so -x 640 -y 480 -fps 3 -q 5\" -o \"output_http.so -p 8080 -w /usr/local/share/mjpg-streamer/www\" -b"
+        #-bでバックグラウンドで実行
 		#https://qiita.com/ego/items/3d23cda713f29f0dd141
 		cmd = shlex.split(cmd)
 		ret = subprocess.check_output(cmd)
@@ -56,6 +58,6 @@ if __name__ == '__main__':
 		if CAMERA==False and stream.camera_flag==1:
 			stream.end()
 			break
-		if i>10:
+		if i>30:
 			CAMERA=0
 		time.sleep(1)

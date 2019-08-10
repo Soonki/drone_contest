@@ -8,7 +8,7 @@ from detect import detect
 from scheduler import Scheduler
 from rocking_wings import rocking_wings
 from led import led
-
+from streaming import stream
 class copter():
 
     def setup(self):
@@ -16,6 +16,7 @@ class copter():
         self.vehicle = connect('/dev/ttyS0', wait_ready=True,baud=57600,rate=2,use_native=True,heartbeat_timeout=-1)
         self.MODE=mode(self.vehicle)
         self.CAMERA=detect()
+        self.stream=stream()
         self.led=led()
         self.ROCK=rocking_wings(self.vehicle)
         self.count=0
@@ -27,7 +28,7 @@ class copter():
         self.mode_thread=Scheduler(self.MODE.updateMode,0.5)
         self.rock_thread=Scheduler(self.ROCK.run,0.25)
         self.mode_thread.start()
-        print("Complite Initial Setup")
+        print("Complete Initial Setup")
         self.led.flash_second(3)
 
     def setup_read_motion(self):
@@ -35,6 +36,7 @@ class copter():
         self.vehicle = connect('/dev/ttyS0', wait_ready=True,baud=57600,rate=2,use_native=True,heartbeat_timeout=-1)
         self.MODE=mode(self.vehicle)
         self.CAMERA=detect()
+        self.stream=stream()
         self.led=led()
         self.ROCK=rocking_wings(self.vehicle)
         self.count=0
@@ -46,7 +48,7 @@ class copter():
         self.mode_thread=Scheduler(self.MODE.updateMode,0.5)
         self.rock_thread=Scheduler(self.ROCK.read_motion,0.25)
         self.mode_thread.start()
-        print("Complite Initial Setup")
+        print("Complete Initial Setup")
         self.led.flash_second(3)
 
     def loop(self):
@@ -54,10 +56,12 @@ class copter():
 
         if self.MODE.CAMERA==True and self.MODE.ROCKING_WINGS==False:
             #detect circle and square
-            self.RED_CIRCLE,self.BLUE_SQUARE=self.CAMERA.detect_all()
-            self.led.blink(self.RED_CIRCLE,self.BLUE_SQUARE)
+            #self.RED_CIRCLE,self.BLUE_SQUARE=self.CAMERA.detect_all()
+            #self.led.blink(self.RED_CIRCLE,self.BLUE_SQUARE)
+            self.stream.start()
 
         if self.MODE.CAMERA==False and self.MODE.ROCKING_WINGS==False:
+            self.stream.end()
             self.led.off_both()
 
         if self.MODE.CAMERA==False and self.MODE.ROCKING_WINGS==True and self.rock_thread.state==0:
@@ -73,8 +77,6 @@ class copter():
             self.rock_thread=Scheduler(self.ROCK.run,0.25)
 
         if self.MODE.RCSAFETY == 1:
-            #self.vehicle.channels.overrides['3']=950
-            self.vehicle.armed=False
             self.count=self.count+1
 
         if self.count>self.flag_count:
@@ -87,6 +89,7 @@ class copter():
 
     def end(self):
         print("End Start")
+        self.vehicle.channels.overrides = {"3" : 500,"1" : 500}
         self.led.flash_second(3)
         self.mode_thread.stop()
         if self.rock_thread.state==1:
@@ -95,18 +98,19 @@ class copter():
         if len(self.ROCK.motion_read_data) > 3:
             self.ROCK.save_motion()
         self.vehicle.close()
-        self.CAMERA.cam.release()
+        #self.CAMERA.cam.release()
         print("Completed")
-
     def loop_read_motion(self):
         t=time.time()
 
         if self.MODE.CAMERA==True and self.MODE.ROCKING_WINGS==False:
             #detect circle and square
-            self.RED_CIRCLE,self.BLUE_SQUARE=self.CAMERA.detect_all()
-            self.led.blink(self.RED_CIRCLE,self.BLUE_SQUARE)
+            #self.RED_CIRCLE,self.BLUE_SQUARE=self.CAMERA.detect_all()
+            #self.led.blink(self.RED_CIRCLE,self.BLUE_SQUARE)
+            self.stream.start()
 
         if self.MODE.CAMERA==False and self.MODE.ROCKING_WINGS==False:
+            self.stream.end()
             self.led.off_both()
 
         if self.MODE.CAMERA==False and self.MODE.ROCKING_WINGS==True and self.rock_thread.state==0:
@@ -121,8 +125,6 @@ class copter():
             self.rock_thread=Scheduler(self.ROCK.read_motion,0.25)
 
         if self.MODE.RCSAFETY == 1:
-            #self.vehicle.channels.overrides['3']=950
-            self.vehicle.armed=False
             self.count=self.count+1
 
         if self.count>self.flag_count:
@@ -135,6 +137,7 @@ class copter():
 
     def end(self):
         print("End Start")
+        self.vehicle.channels.overrides = {"3" : 500,"1" : 500}
         self.led.flash_second(3)
         self.mode_thread.stop()
         if self.rock_thread.state==1:
@@ -155,6 +158,8 @@ class copter():
             else:
                 pass
         print(output_str)
+
+
 
 
 

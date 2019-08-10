@@ -11,6 +11,7 @@ while(True):#COPTER.CAMERA.cam.isOpened()):
         #print("SERVO:%d" % COPTER.MODE.SERVO,time.time()-t)
         #print("R:",COPTER.RED_CIRCLE,"B:",COPTER.BLUE_SQUARE)
         if flag == True:
+
             print("Safety flag")
             break
 
