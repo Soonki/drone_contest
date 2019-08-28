@@ -8,7 +8,7 @@ class servo():
         self.pi = pigpio.pi()
         self.pi.set_mode(self.gpio_pin0, pigpio.OUTPUT)
         self.motorstate = True
-    	self.pos_min=22000
+    	self.pos_min=30000
     	self.pos_max=78000
         self.pi.hardware_PWM(self.gpio_pin0, 50, self.pos_max)
 
