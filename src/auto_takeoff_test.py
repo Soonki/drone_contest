@@ -3,6 +3,7 @@
 
 #参考URLhttps://github.com/dronekit/dronekit-python/blob/master/examples/set_attitude_target/set_attitude_target.py
 from dronekit import connect, VehicleMode, LocationGlobal, LocationGlobalRelative
+from pymavlink import mavutil # Needed for command message definitions
 import time
 import math
 
@@ -15,24 +16,6 @@ def arm_and_takeoff_nogps(aTargetAltitude):
     DEFAULT_TAKEOFF_THRUST = 0.7
     SMOOTH_TAKEOFF_THRUST = 0.6
 
-    print("Basic pre-arm checks")
-    # Don't let the user try to arm until autopilot is ready
-    # If you need to disable the arming check,
-    # just comment it with your own responsibility.
-    while not vehicle.is_armable:
-        print(" Waiting for vehicle to initialise...")
-        time.sleep(1)
-
-
-    print("Arming motors")
-    # Copter should arm in GUIDED_NOGPS mode
-    vehicle.mode = VehicleMode("GUIDED_NOGPS")
-    vehicle.armed = True
-
-    while not vehicle.armed:
-        print(" Waiting for arming...")
-        vehicle.armed = True
-        time.sleep(1)
 
     print("Taking off!")
 
@@ -131,13 +114,19 @@ if __name__ == '__main__':
     vehicle = connect('/dev/ttyS0', wait_ready=True,baud=57600)
 
     mode=mode(vehicle)
+    takeoff_count=0
 
 
     while(True):
         mode.updateMode()
         SERVO,ROCKING_WINGS,CAMERA,RCSAFETY = mode.getMode()
+        #自動離陸モード
+        if takeoff_count==0:
+            arm_and_takeoff_nogps(2.5)
+            takeoff_count=1
 
-        arm_and_takeoff_nogps(2.5)
+            print("Hold position for 3 seconds")
+            set_attitude(duration = 3)
 
         if  RCSAFETY == 1:
             break
@@ -147,6 +136,11 @@ if __name__ == '__main__':
         print("CAMERA:%d" % CAMERA)
         print("RCSAFETY:%d" % RCSAFETY)
         time.sleep(0.5)
+
+        #自動着陸？
+        # print("Setting LAND mode...")
+        # vehicle.mode = VehicleMode("LAND")
+        # time.sleep(1)
     # Close vehicle object before exiting script
     vehicle.close()
     print("Completed")
