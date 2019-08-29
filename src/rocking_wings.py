@@ -16,7 +16,8 @@ class rocking_wings():
     def run(self):#スレッドで回す想定
         self.count+=1
         if self.count < self.motion_step:
-            self.vehicle.channels.overrides = {'1':self.motion_data[self.count][1], '2':self.motion_data[self.count][2],'3':self.motion_data[self.count][3],'4':self.motion_data[self.count][4]}
+           # self.vehicle.channels.overrides = {'1':self.motion_data[self.count][1], '2':self.motion_data[self.count][2],'3':self.motion_data[self.count][3],'4':self.motion_data[self.count][4]}
+			self.vehicle.channels.overrides = {'4':self.motion_data[self.count][4]}
         else:
             self.clear()
 

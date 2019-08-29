@@ -1,8 +1,9 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
 import time
-def get_altitude():
-    current_altitude = vevehicle.location.global_relative_frame.alt
+from dronekit import connect,VehicleMode
+def get_altitude(vehicle):
+    current_altitude = vehicle.location.global_relative_frame.alt
     print(current_altitude)
 
 
@@ -23,7 +24,7 @@ if __name__ == '__main__':
         mode.updateMode()
         SERVO,ROCKING_WINGS,CAMERA,RCSAFETY = mode.getMode()
 
-        get_altitude()
+        get_altitude(vehicle)
 
         if  RCSAFETY == 1:
             break
