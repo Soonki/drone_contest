@@ -2,12 +2,12 @@
 # -*- coding: utf-8 -*-
 
 #参考URLhttps://github.com/dronekit/dronekit-python/blob/master/examples/set_attitude_target/set_attitude_target.py
-from dronekit import connect, VehicleMode, LocationGlobal, LocationGlobalRelative
+from dronekit import connect, VehicleMode, LocationGlobal, Rangefinder,  LocationGlobalRelative
 from pymavlink import mavutil # Needed for command message definitions
 import time
 import math
 
-def arm_and_takeoff_nogps(aTargetAltitude):
+def arm_and_takeoff_nogps(aTargetAltitude,vehicle):
     """
     Arms vehicle and fly to aTargetAltitude without GPS data.
     """
@@ -16,12 +16,15 @@ def arm_and_takeoff_nogps(aTargetAltitude):
     DEFAULT_TAKEOFF_THRUST = 0.7
     SMOOTH_TAKEOFF_THRUST = 0.6
 
+    rangefinder = Rangefinder(vehicle)
+
 
     print("Taking off!")
 
     thrust = DEFAULT_TAKEOFF_THRUST
     while True:
-        current_altitude = vehicle.location.global_relative_frame.alt
+        # current_altitude = vehicle.location.global_relative_frame.alt
+        current_altitude = rangefinder.distance
         print(" Altitude: %f  Desired: %f" %
               (current_altitude, aTargetAltitude))
         if current_altitude >= aTargetAltitude*0.95: # Trigger just below target alt.
@@ -122,7 +125,7 @@ if __name__ == '__main__':
         SERVO,ROCKING_WINGS,CAMERA,RCSAFETY = mode.getMode()
         #自動離陸モード
         if takeoff_count==0:
-            arm_and_takeoff_nogps(2.5)
+            arm_and_takeoff_nogps(1.5,vehicle)
             takeoff_count=1
 
             print("Hold position for 3 seconds")

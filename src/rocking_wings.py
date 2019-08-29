@@ -20,6 +20,7 @@ class rocking_wings():
 			self.vehicle.channels.overrides = {'4':self.motion_data[self.count][4]}
         else:
             self.clear()
+            self.count=0
 
     def read_motion(self):
         data=np.array([[time.time(),self.vehicle.channels['1'],self.vehicle.channels['2'],self.vehicle.channels['3'],self.vehicle.channels['4']]])
