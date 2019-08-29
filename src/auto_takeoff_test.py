@@ -16,7 +16,7 @@ def arm_and_takeoff_nogps(aTargetAltitude,vehicle):
     DEFAULT_TAKEOFF_THRUST = 0.7
     SMOOTH_TAKEOFF_THRUST = 0.6
 
-
+    vehicle.mode = VehicleMode("GUIDED_NOGPS")
     print("Taking off!")
 
     thrust = DEFAULT_TAKEOFF_THRUST
@@ -128,6 +128,7 @@ if __name__ == '__main__':
 
             print("Hold position for 3 seconds")
             set_attitude(duration = 3)
+            vehicle.mode = VehicleMode("STABILIZE")
 
         if  RCSAFETY == 1:
             break
