@@ -2,7 +2,7 @@
 # -*- coding: utf-8 -*-
 
 #参考URLhttps://github.com/dronekit/dronekit-python/blob/master/examples/set_attitude_target/set_attitude_target.py
-from dronekit import connect, VehicleMode, LocationGlobal, Rangefinder,  LocationGlobalRelative
+from dronekit import connect, VehicleMode, LocationGlobal,   LocationGlobalRelative
 from pymavlink import mavutil # Needed for command message definitions
 import time
 import math
@@ -16,15 +16,13 @@ def arm_and_takeoff_nogps(aTargetAltitude,vehicle):
     DEFAULT_TAKEOFF_THRUST = 0.7
     SMOOTH_TAKEOFF_THRUST = 0.6
 
-    rangefinder = Rangefinder(vehicle)
-
 
     print("Taking off!")
 
     thrust = DEFAULT_TAKEOFF_THRUST
     while True:
         # current_altitude = vehicle.location.global_relative_frame.alt
-        current_altitude = rangefinder.distance
+        current_altitude = vehicle.rangefinder.distance
         print(" Altitude: %f  Desired: %f" %
               (current_altitude, aTargetAltitude))
         if current_altitude >= aTargetAltitude*0.95: # Trigger just below target alt.
