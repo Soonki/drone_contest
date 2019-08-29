@@ -123,7 +123,7 @@ if __name__ == '__main__':
         SERVO,ROCKING_WINGS,CAMERA,RCSAFETY = mode.getMode()
         #自動離陸モード
         if takeoff_count==0:
-            arm_and_takeoff_nogps(1.5,vehicle)
+            arm_and_takeoff_nogps(0.6,vehicle)
             takeoff_count=1
 
             print("Hold position for 3 seconds")

@@ -4,7 +4,6 @@ import time
 from dronekit import connect,VehicleMode
 def get_altitude(vehicle):
     current_altitude = vehicle.location.global_relative_frame.alt
-    rangefinder = Rangefinder(vehicle)
     current_altitude2 = vehicle.rangefinder.distance
     print("location_func: ",current_altitude,"  rangefinder: ",current_altitude2)
 
