@@ -7,11 +7,13 @@ from pymavlink import mavutil # Needed for command message definitions
 import time
 import math
 
-def arm_and_takeoff_nogps(aTargetAltitude,vehicle,mode,takeoff_count):
+takeoff_count=0
+
+def arm_and_takeoff_nogps(aTargetAltitude,vehicle,mode):
     """
     Arms vehicle and fly to aTargetAltitude without GPS data.
     """
-
+    global takeoff_count
     ##### CONSTANTS #####
     DEFAULT_TAKEOFF_THRUST = 0.3
     SMOOTH_TAKEOFF_THRUST = 0.2
@@ -23,9 +25,13 @@ def arm_and_takeoff_nogps(aTargetAltitude,vehicle,mode,takeoff_count):
     while True:
         mode.updateMode()
         SERVO,ROCKING_WINGS,CAMERA,RCSAFETY = mode.getMode()
+        print(vehicle.mode)
 
         if SERVO == 1:
-            vehicle.mode = VehicleMode("STABILIZE")
+            while vehicle.mode!="STABILIZE":
+                vehicle.mode = VehicleMode("STABILIZE")
+                print(vehicle.mode)
+                time.sleep(0.5)
             takeoff_count=2
             break
 
@@ -113,7 +119,6 @@ def to_quaternion(roll = 0.0, pitch = 0.0, yaw = 0.0):
     return [w, x, y, z]
 
 
-
 if __name__ == '__main__':
     # Import DroneKit-Python
     from dronekit import connect, VehicleMode
@@ -123,16 +128,17 @@ if __name__ == '__main__':
     vehicle = connect('/dev/ttyS0', wait_ready=True,baud=57600)
 
     mode=mode(vehicle)
-    takeoff_count=0
 
 
     while(True):
         mode.updateMode()
         SERVO,ROCKING_WINGS,CAMERA,RCSAFETY = mode.getMode()
+        print("======================================")
+        print(vehicle.mode)
         #自動離陸モード
         if takeoff_count==0:
             takeoff_count=1
-            arm_and_takeoff_nogps(0.6,vehicle,mode,takeoff_count)
+            arm_and_takeoff_nogps(0.6,vehicle,mode)
 
             if takeoff_count==1:
                 print("Hold position for 3 seconds")
