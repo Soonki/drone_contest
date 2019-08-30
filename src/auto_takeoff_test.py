@@ -7,20 +7,28 @@ from pymavlink import mavutil # Needed for command message definitions
 import time
 import math
 
-def arm_and_takeoff_nogps(aTargetAltitude,vehicle):
+def arm_and_takeoff_nogps(aTargetAltitude,vehicle,mode,takeoff_count):
     """
     Arms vehicle and fly to aTargetAltitude without GPS data.
     """
 
     ##### CONSTANTS #####
-    DEFAULT_TAKEOFF_THRUST = 0.7
-    SMOOTH_TAKEOFF_THRUST = 0.6
+    DEFAULT_TAKEOFF_THRUST = 0.3
+    SMOOTH_TAKEOFF_THRUST = 0.2
 
     vehicle.mode = VehicleMode("GUIDED_NOGPS")
     print("Taking off!")
 
     thrust = DEFAULT_TAKEOFF_THRUST
     while True:
+        mode.updateMode()
+        SERVO,ROCKING_WINGS,CAMERA,RCSAFETY = mode.getMode()
+
+        if SERVO == 1:
+            vehicle.mode = VehicleMode("STABILIZE")
+            takeoff_count=2
+            break
+
         # current_altitude = vehicle.location.global_relative_frame.alt
         current_altitude = vehicle.rangefinder.distance
         print(" Altitude: %f  Desired: %f" %
@@ -35,7 +43,7 @@ def arm_and_takeoff_nogps(aTargetAltitude,vehicle):
 
 def send_attitude_target(roll_angle = 0.0, pitch_angle = 0.0,
                          yaw_angle = None, yaw_rate = 0.0, use_yaw_rate = False,
-                         thrust = 0.5):
+                         thrust = 0.1):
     """
     use_yaw_rate: the yaw can be controlled using yaw_angle OR yaw_rate.
                   When one is used, the other is ignored by Ardupilot.
@@ -64,7 +72,7 @@ def send_attitude_target(roll_angle = 0.0, pitch_angle = 0.0,
 
 def set_attitude(roll_angle = 0.0, pitch_angle = 0.0,
                  yaw_angle = None, yaw_rate = 0.0, use_yaw_rate = False,
-                 thrust = 0.5, duration = 0):
+                 thrust = 0.1, duration = 0):
     """
     Note that from AC3.3 the message should be re-sent more often than every
     second, as an ATTITUDE_TARGET order has a timeout of 1s.
@@ -123,12 +131,13 @@ if __name__ == '__main__':
         SERVO,ROCKING_WINGS,CAMERA,RCSAFETY = mode.getMode()
         #自動離陸モード
         if takeoff_count==0:
-            arm_and_takeoff_nogps(0.6,vehicle)
             takeoff_count=1
+            arm_and_takeoff_nogps(0.6,vehicle,mode,takeoff_count)
 
-            print("Hold position for 3 seconds")
-            set_attitude(duration = 3)
-            vehicle.mode = VehicleMode("STABILIZE")
+            if takeoff_count==1:
+                print("Hold position for 3 seconds")
+                set_attitude(duration = 3)
+                vehicle.mode = VehicleMode("STABILIZE")
 
         if  RCSAFETY == 1:
             break
