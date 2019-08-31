@@ -26,12 +26,12 @@ class AC_PID():
     def controller(self,target_altitude,mode):
         print("AUTO_TAKEOFF start!")
         while True:
-            current_altitude=getaltitude()
+            current_altitude=self.getaltitude()
 
             #auto_takeoff 終了判定
             if current_altitude>=target_altitude:
                 print("Reach target altitude")
-                Set_thrust(0)
+                self.clear()
                 break
 
             mode.updateMode()
@@ -41,11 +41,12 @@ class AC_PID():
             #セーフティ機能
             if SERVO == 0:
                 print("Saftey mode 自動離陸中断します")
+                self.clear()
                 break
 
-            PID_process(current_altitude,target_altitude)
+            self.PID_process(current_altitude,target_altitude)
 
-            Set_thrust(self.thrust_input)
+            self.Set_thrust()
 
 
     def getaltitude(self):
@@ -66,8 +67,11 @@ class AC_PID():
         if self.thrust_input>=1900:
             self.thrust_input=1900
 
-    def Set_thrust(self,override):
-        self.vehicle.channels.overrides = {'4':override}
+    def Set_thrust(self):
+        self.vehicle.channels.overrides = {'4':self.thrust_input}
+
+    def clear(self):
+        self.vehicle.channels.overrides = {}
 
 
 if __name__ == '__main__':
@@ -95,7 +99,7 @@ if __name__ == '__main__':
 
         #自動離陸モード
         if SERVO==1　and takeoff_count==0:
-            controller(target_altitude,mode)
+            AC.controller(target_altitude,mode)
             print("Auto take-off sequence ends")
             takeoff_count=1
 
