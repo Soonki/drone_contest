@@ -94,7 +94,7 @@ if __name__ == '__main__':
         print("======================================")
 
         #自動離陸モード
-        if SERVO==0　and takeoff_count==0:
+        if SERVO==1　and takeoff_count==0:
             controller(target_altitude,mode)
             print("Auto take-off sequence ends")
             takeoff_count=1
