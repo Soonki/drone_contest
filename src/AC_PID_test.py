@@ -21,11 +21,18 @@ class AC_PID():
         self.dt=0.01
 
         self.vehicle=vehicle
+        self.takeoff_count=0
+        #Thrustの値設定
+        self.Thrust_Saturation=1800
+        self.Thrust_Standard=1500
 
 
     def controller(self,target_altitude,mode):
         print("AUTO_TAKEOFF start!")
+        print("---------------------------------")
+        self.e_pre=target_altitude
         while True:
+            start_time=time.time()
             current_altitude=self.getaltitude()
 
             #auto_takeoff 終了判定
@@ -39,7 +46,7 @@ class AC_PID():
             print("Now_mode: ",vehicle.mode)
 
             #セーフティ機能
-            if SERVO == 0:
+            if SERVO == 0 or RCSAFETY == 1:
                 print("Saftey mode 自動離陸中断します")
                 self.clear()
                 break
@@ -47,6 +54,9 @@ class AC_PID():
             self.PID_process(current_altitude,target_altitude)
 
             self.Set_thrust()
+
+            required_time=time.time()-start_time
+            time.sleep(self.dt-required_time)
 
 
     def getaltitude(self):
@@ -56,16 +66,16 @@ class AC_PID():
 
     def PID_process(self,current_altitude,target_altitude):
         self.e=target_altitude-current_altitude
-        self.edif=(self.e-self.e_pre)/self.dt
+        self.e_dif=(self.e-self.e_pre)/self.dt
         self.e_int=self.e_int+self.e*dt
 
-        self.thrust_input=1100+self.Kp*self.e+self.Kd*self.edif0+self.Ki*self.e_int
+        self.thrust_input=self.Thrust_Standard+self.Kp*self.e+self.Kd*self.e_dif+self.Ki*self.e_int
 
         self.e_pre=self.e
 
         #Thrust_Saturation
-        if self.thrust_input>=1900:
-            self.thrust_input=1900
+        if self.thrust_input>=self.Thrust_Saturation:
+            self.thrust_input=self.Thrust_Saturation
 
     def Set_thrust(self):
         self.vehicle.channels.overrides = {'4':self.thrust_input}
@@ -87,7 +97,6 @@ if __name__ == '__main__':
     AC=AC_PID(vehicle)
     #目標高度
     target_altitude=0.6
-    takeoff_count=0
 
 
     while(True):
@@ -98,10 +107,16 @@ if __name__ == '__main__':
         print("======================================")
 
         #自動離陸モード
-        if SERVO==1　and takeoff_count==0:
+        if SERVO==1　and AC.takeoff_count==0:
             AC.controller(target_altitude,mode)
             print("Auto take-off sequence ends")
-            takeoff_count=1
+            AC.takeoff_count=1
+            print("---------------------------------")
+
+        #モードフラグの初期化処理
+        if SERVO==1 and AC.takeoff_count==1 and AC.getaltitude()<=0.2:
+            AC.takeoff_count=0
+            print("再度、自動離陸可能")
 
         if  RCSAFETY == 1:
             break
