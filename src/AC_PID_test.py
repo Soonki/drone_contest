@@ -8,7 +8,7 @@ import time
 class AC_PID():
     def __init__(self,vehicle):
         #ゲイン設定、スラスト初期値
-        self.Kp=700
+        self.Kp=350
         self.Kd=50
         self.Ki=50
         self.thrust_input=1100
@@ -18,12 +18,12 @@ class AC_PID():
         self.e_dif=0
         self.e_int=0
         #制御器周波数
-        self.dt=0.01
+        self.dt=0.1
 
         self.vehicle=vehicle
         self.takeoff_count=0
         #Thrustの値設定
-        self.Thrust_Saturation=1800
+        self.Thrust_Saturation=1750
         self.Thrust_Standard=1500
 
 
@@ -39,16 +39,19 @@ class AC_PID():
             if current_altitude>=target_altitude:
                 print("Reach target altitude")
                 self.clear()
+                self.e_int=0
                 break
 
             mode.updateMode()
             SERVO,ROCKING_WINGS,CAMERA,RCSAFETY = mode.getMode()
-            print("Now_mode: ",vehicle.mode)
+            print("SERVO: ",SERVO)
+            print(vehicle.mode.name)
 
             #セーフティ機能
             if SERVO == 0 or RCSAFETY == 1:
                 print("Saftey mode 自動離陸中断します")
                 self.clear()
+                self.e_int=0
                 break
 
             self.PID_process(current_altitude,target_altitude)
@@ -56,7 +59,8 @@ class AC_PID():
             self.Set_thrust()
 
             required_time=time.time()-start_time
-            time.sleep(self.dt-required_time)
+            time_A=self.dt-required_time
+            time.sleep(time_A)
 
 
     def getaltitude(self):
@@ -67,18 +71,21 @@ class AC_PID():
     def PID_process(self,current_altitude,target_altitude):
         self.e=target_altitude-current_altitude
         self.e_dif=(self.e-self.e_pre)/self.dt
-        self.e_int=self.e_int+self.e*dt
+        self.e_int=self.e_int+self.e*self.dt
 
         self.thrust_input=self.Thrust_Standard+self.Kp*self.e+self.Kd*self.e_dif+self.Ki*self.e_int
 
         self.e_pre=self.e
+
+        print("Control_input_pre: ",self.thrust_input)
 
         #Thrust_Saturation
         if self.thrust_input>=self.Thrust_Saturation:
             self.thrust_input=self.Thrust_Saturation
 
     def Set_thrust(self):
-        self.vehicle.channels.overrides = {'4':self.thrust_input}
+        self.vehicle.channels.overrides = {'3':self.thrust_input}
+        print("override: ",self.thrust_input)
 
     def clear(self):
         self.vehicle.channels.overrides = {}
@@ -107,14 +114,14 @@ if __name__ == '__main__':
         print("======================================")
 
         #自動離陸モード
-        if SERVO==1　and AC.takeoff_count==0:
+        if SERVO==1 and AC.takeoff_count==0:
             AC.controller(target_altitude,mode)
             print("Auto take-off sequence ends")
             AC.takeoff_count=1
             print("---------------------------------")
 
         #モードフラグの初期化処理
-        if SERVO==1 and AC.takeoff_count==1 and AC.getaltitude()<=0.2:
+        if SERVO==0 and AC.takeoff_count==1 and AC.getaltitude()<=0.2:
             AC.takeoff_count=0
             print("再度、自動離陸可能")
 
