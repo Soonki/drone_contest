@@ -11,8 +11,8 @@ pi.set_mode(gpio_pin0, pigpio.OUTPUT)
 
 # GPIO18: 2Hz、duty比0.5
 #pi.hardware_PWM(gpio_pin0, 50, 100000)
-pi.hardware_PWM(gpio_pin0, 50,22000)
-print("22000")
+pi.hardware_PWM(gpio_pin0, 50,27000)
+print("27000")
 time.sleep(3)
 pi.hardware_PWM(gpio_pin0, 50, 78000)
 print("78000")
