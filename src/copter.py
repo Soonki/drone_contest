@@ -74,6 +74,7 @@ class copter():
             self.led.off_both()
             self.rock_thread.stop()
             self.ROCK.clear()
+            self.ROCK.count=0
             self.rock_thread=Scheduler(self.ROCK.run,0.25)
 
         if self.MODE.RCSAFETY == 1:
