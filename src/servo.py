@@ -8,9 +8,10 @@ class servo():
         self.pi = pigpio.pi()
         self.pi.set_mode(self.gpio_pin0, pigpio.OUTPUT)
         self.motorstate = True
-        self.pos_min=27000
-        self.pos_max=78000
-        self.pi.hardware_PWM(self.gpio_pin0, 50, self.pos_max)
+        self.pos_min=26100
+        self.pos_up1=70000
+        self.pos_up2=113600
+        self.pi.hardware_PWM(self.gpio_pin0, 50, self.pos_min)
 
     def changeMotorstate(self):
         if self.motorstate:
@@ -20,17 +21,23 @@ class servo():
         self.pi.hardware_PWM(self.gpio_pin0, 50, output)
         self.motorstate=not self.motorstate
 
-    def upMotor(self):
-        self.pi.hardware_PWM(self.gpio_pin0, 50, self.pos_max)
-
-    def downMotor(self):
-        self.pi.hardware_PWM(self.gpio_pin0, 50, self.pos_min)
-
-    def updateMotor(self,flag):
-        if flag == 0:
-            self.upMotor()
+    #def upMotor_1(self):
+    #    self.pi.hardware_PWM(self.gpio_pin0, 50, self.pos_up1)
+    #def upMotor_2(self):
+    #    self.pi.hardware_PWM(self.gpio_pin0, 50, self.pos_up2)
+    #def downMotor(self):
+    #    self.pi.hardware_PWM(self.gpio_pin0, 50, self.pos_min)
+    def updateMotor(self,SERVO):
+        if SERVO == 2 :
+            output=self.pos_up2
+            #self.upMotor_2()
+        elif SERVO == 1 :
+            output=self.pos_up1
+            #self.upMotor_1()
         else:
-            self.downMotor()
+            output=self.pos_min
+            #self.downMotor()
+        self.pi.hardware_PWM(self.gpio_pin0, 50,output)
 
 
 if __name__ == '__main__':
@@ -48,10 +55,7 @@ if __name__ == '__main__':
         mode.updateMode()
         SERVO,ROCKING_WINGS,CAMERA,RCSAFETY = mode.getMode()
 
-        if SERVO == 0:
-            servo.upMotor()
-        else:
-            servo.downMotor()
+        servo.updateMotor(SERVO)
 
         if  RCSAFETY == 1:
             break

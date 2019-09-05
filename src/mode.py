@@ -16,9 +16,11 @@ class mode():
 
     def updateMode(self):
         if int(self.vehicle.channels['6']) > 1800:
-            self.SERVO = True
+            self.SERVO = 2
+        elif:int(self.vehicle.channels['6']) > 1300:
+            self.SERVO = 1
         else:
-            self.SERVO = False
+            self.SERVO = 0
         self.motor.updateMotor(self.SERVO)
 
         if int(self.vehicle.channels['7']) > 1800 and self.vehicle.mode.name=='ALT_HOLD':
