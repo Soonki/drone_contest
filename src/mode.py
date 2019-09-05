@@ -7,7 +7,7 @@ import time
 
 class mode():
     def __init__(self,vehicle):
-        self.SERVO=1
+        self.SERVO=0
         self.ROCKING_WINGS=0
         self.CAMERA=0
         self.RCSAFETY=0
@@ -16,11 +16,11 @@ class mode():
 
     def updateMode(self):
         if int(self.vehicle.channels['6']) > 1800:
-            self.SERVO = 2
-        elif int(self.vehicle.channels['6']) > 1300:
             self.SERVO = 1
-        else:
+        elif int(self.vehicle.channels['6']) > 1300:
             self.SERVO = 0
+        else:
+            self.SERVO = -1
         self.motor.updateMotor(self.SERVO)
 
         if int(self.vehicle.channels['7']) > 1800 and self.vehicle.mode.name=='ALT_HOLD':

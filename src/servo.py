@@ -8,10 +8,11 @@ class servo():
         self.pi = pigpio.pi()
         self.pi.set_mode(self.gpio_pin0, pigpio.OUTPUT)
         self.motorstate = True
-        self.pos_min=26100
-        self.pos_up1=113600
-        self.pos_up2=70000
+        self.pos_min=113600
+        self.pos_up1=70000
+        self.pos_up2=26100
         self.pi.hardware_PWM(self.gpio_pin0, 50, self.pos_min)
+        self.flag=0
 
     def changeMotorstate(self):
         if self.motorstate:
@@ -28,15 +29,21 @@ class servo():
     #def downMotor(self):
     #    self.pi.hardware_PWM(self.gpio_pin0, 50, self.pos_min)
     def updateMotor(self,SERVO):
-        if SERVO == 2 :
-            output=self.pos_up2
-            #self.upMotor_2()
-        elif SERVO == 1 :
-            output=self.pos_up1
-            #self.upMotor_1()
-        else:
+        if SERVO != 0 and self.flag == 0: #release mini chicken
+            self.flag=SERVO
+        if SERVO - self.flag != 0 and abs(self.flag)-1 == 0: #release big chicken
+            self.flag=2
+        if SERVO != 0 and self.flag == 2:
+            self.flag=3
+        if SERVO == 0 and self.flag > 2:
+            self.flag=0
+        
+        if self.flag == 0:
             output=self.pos_min
-            #self.downMotor()
+        elif abs(self.flag)-1 == 0:
+            output=self.pos_up1
+        else:
+            output=self.pos_up2
         self.pi.hardware_PWM(self.gpio_pin0, 50,output)
 
 
