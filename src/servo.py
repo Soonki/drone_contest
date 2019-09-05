@@ -9,8 +9,8 @@ class servo():
         self.pi.set_mode(self.gpio_pin0, pigpio.OUTPUT)
         self.motorstate = True
         self.pos_min=26100
-        self.pos_up1=70000
-        self.pos_up2=113600
+        self.pos_up1=113600
+        self.pos_up2=70000
         self.pi.hardware_PWM(self.gpio_pin0, 50, self.pos_min)
 
     def changeMotorstate(self):

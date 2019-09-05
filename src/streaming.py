@@ -25,13 +25,16 @@ class stream():
             #cmd="sh end_server.sh"
             cmd2="pidof mjpg_streamer"
             cmd2 = shlex.split(cmd2)
-            ret2 = subprocess.check_output(cmd2)
-            print(ret2)
-            cmd="kill -9 "+ret2
-            cmd = shlex.split(cmd)
-            ret = subprocess.check_output(cmd)
-            print(ret)
-            print("end streaming")
+            try:
+                ret2 = subprocess.check_output(cmd2)
+                print(ret2)            
+                cmd="kill -9 "+ret2
+                cmd = shlex.split(cmd)
+                ret = subprocess.check_output(cmd)
+                print(ret)
+                print("end streaming")
+            except:
+                print("streaming start error!")
             self.camera_flag=0
 
 
