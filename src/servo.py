@@ -16,9 +16,9 @@ class servo():
 
     def changeMotorstate(self):
         if self.motorstate:
-            output=self.pos_max
-        else:
             output=self.pos_min
+        else:
+            output=self.pos_max
         self.pi.hardware_PWM(self.gpio_pin0, 50, output)
         self.motorstate=not self.motorstate
 

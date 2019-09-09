@@ -8,6 +8,7 @@ import time
 class mode():
     def __init__(self,vehicle):
         self.SERVO=0
+        self.SERVO_MODE=0
         self.ROCKING_WINGS=0
         self.CAMERA=0
         self.RCSAFETY=0
@@ -22,6 +23,7 @@ class mode():
         else:
             self.SERVO = -1
         self.motor.updateMotor(self.SERVO)
+        self.SERVO_MODE=abs(self.motor.flag)
 
         if int(self.vehicle.channels['7']) > 1800 and self.vehicle.mode.name=='ALT_HOLD':
             self.ROCKING_WINGS = True
@@ -39,7 +41,7 @@ class mode():
             self.RCSAFETY = False
 
     def getMode(self):
-        return self.SERVO,self.ROCKING_WINGS,self.CAMERA,self.RCSAFETY
+        return self.SERVO_MODE,self.ROCKING_WINGS,self.CAMERA,self.RCSAFETY
 
 if __name__ == '__main__':
     # Import DroneKit-Python
