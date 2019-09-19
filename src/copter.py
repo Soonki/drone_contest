@@ -28,6 +28,7 @@ class copter():
         self.mode_thread=Scheduler(self.MODE.updateMode,0.5)
         self.rock_thread=Scheduler(self.ROCK.run,0.25)
         self.mode_thread.start()
+        self.armflag=False
         print("Complete Initial Setup")
         self.led.flash_second(3)
 
@@ -85,6 +86,12 @@ class copter():
         #print(time.time()-t)
         if time.time()-t<self.dt:
             time.sleep(self.dt-time.time()+t)
+
+        if self.vehicle.armed == True and self.armflag == False:
+            self.led.flash_second(2)
+
+        if self.vehicle.armed != self.armflag:
+            self.armflag=self.vehicle.armed
 
         return self.flag
 
