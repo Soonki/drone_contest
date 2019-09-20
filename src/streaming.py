@@ -2,11 +2,8 @@
 #!/usr/bin/python
 # -*- coding: utf-8 -*-
 import subprocess
-import commands
 import shlex
-import time
-import threading
-import pigpio
+
 class stream():
     def __init__(self):
         self.camera_flag=0
@@ -25,13 +22,16 @@ class stream():
             #cmd="sh end_server.sh"
             cmd2="pidof mjpg_streamer"
             cmd2 = shlex.split(cmd2)
-            ret2 = subprocess.check_output(cmd2)
-            print(ret2)
-            cmd="kill -9 "+ret2
-            cmd = shlex.split(cmd)
-            ret = subprocess.check_output(cmd)
-            print(ret)
-            print("end streaming")
+            try:
+                ret2 = subprocess.check_output(cmd2)
+                print(ret2)            
+                cmd="kill -9 "+ret2
+                cmd = shlex.split(cmd)
+                ret = subprocess.check_output(cmd)
+                print(ret)
+                print("end streaming")
+            except:
+                print("streaming start error!")
             self.camera_flag=0
 
 
@@ -39,6 +39,10 @@ if __name__ == '__main__':
     # Import DroneKit-Python
     from dronekit import connect, VehicleMode
     from mode import mode
+    import commands
+    import time
+    import pigpio
+    import threading
     # Connect to the Vehicle.
     print("Connecting")
     vehicle = connect('/dev/ttyS0', wait_ready=True,baud=57600)

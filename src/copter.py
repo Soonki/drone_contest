@@ -2,9 +2,9 @@
 # -*- coding: utf-8 -*-
 from mode import mode
 from dronekit import connect, VehicleMode
-from servo import servo
+#from servo import servo
 import time
-from detect import detect
+#from detect import detect
 from scheduler import Scheduler
 from rocking_wings import rocking_wings
 from led import led
@@ -15,7 +15,7 @@ class copter():
         print("Connecting")
         self.vehicle = connect('/dev/ttyS0', wait_ready=True,baud=57600,rate=2,use_native=True,heartbeat_timeout=-1)
         self.MODE=mode(self.vehicle)
-        self.CAMERA=detect()
+        #self.CAMERA=detect()
         self.stream=stream()
         self.led=led()
         self.ROCK=rocking_wings(self.vehicle)
@@ -28,6 +28,7 @@ class copter():
         self.mode_thread=Scheduler(self.MODE.updateMode,0.5)
         self.rock_thread=Scheduler(self.ROCK.run,0.25)
         self.mode_thread.start()
+        self.armflag=False
         print("Complete Initial Setup")
         self.led.flash_second(3)
 
@@ -35,7 +36,7 @@ class copter():
         print("Connecting")
         self.vehicle = connect('/dev/ttyS0', wait_ready=True,baud=57600,rate=2,use_native=True,heartbeat_timeout=-1)
         self.MODE=mode(self.vehicle)
-        self.CAMERA=detect()
+        #self.CAMERA=detect()
         self.stream=stream()
         self.led=led()
         self.ROCK=rocking_wings(self.vehicle)
@@ -85,6 +86,12 @@ class copter():
         #print(time.time()-t)
         if time.time()-t<self.dt:
             time.sleep(self.dt-time.time()+t)
+
+        if self.vehicle.armed == True and self.armflag == False:
+            self.led.flash_second(2)
+
+        if self.vehicle.armed != self.armflag:
+            self.armflag=self.vehicle.armed
 
         return self.flag
 
@@ -147,15 +154,15 @@ class copter():
         if len(self.ROCK.motion_read_data) > 3:
             self.ROCK.save_motion()
         self.vehicle.close()
-        self.CAMERA.cam.release()
+        #self.CAMERA.cam.release()
         print("Completed")
 
     def output_mode(self):
-        mode_list={"CAMERA":self.MODE.CAMERA,"ROCKING_WINGS":self.MODE.ROCKING_WINGS,"RCSAFETY":self.MODE.RCSAFETY,"SERVO":self.MODE.SERVO}
+        mode_list={"CAMERA":self.MODE.CAMERA,"ROCKING_WINGS":self.MODE.ROCKING_WINGS,"RCSAFETY":self.MODE.RCSAFETY,"SERVO":self.MODE.SERVO_MODE}
         output_str="Now mode:\n"
         for i in mode_list:
-            if mode_list[i]==True:
-                output_str=output_str+i+":1\n"
+            if mode_list[i]!=0:
+                output_str=output_str+i+":"+str(int(mode_list[i]))+"\n"
             else:
                 pass
         print(output_str)
@@ -168,7 +175,7 @@ if __name__=="__main__":
 
     COPTER=copter()
     COPTER.setup()
-    while(True):#COPTER.CAMERA.cam.isOpened()):
+    while(True): #COPTER.CAMERA.cam.isOpened()):
         try:
             t=time.time()
             flag=COPTER.loop()
