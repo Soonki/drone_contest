@@ -2,11 +2,8 @@
 #!/usr/bin/python
 # -*- coding: utf-8 -*-
 import subprocess
-import commands
 import shlex
-import time
-import threading
-import pigpio
+
 class stream():
     def __init__(self):
         self.camera_flag=0
@@ -42,6 +39,10 @@ if __name__ == '__main__':
     # Import DroneKit-Python
     from dronekit import connect, VehicleMode
     from mode import mode
+    import commands
+    import time
+    import pigpio
+    import threading
     # Connect to the Vehicle.
     print("Connecting")
     vehicle = connect('/dev/ttyS0', wait_ready=True,baud=57600)

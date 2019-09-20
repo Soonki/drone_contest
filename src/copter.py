@@ -2,9 +2,9 @@
 # -*- coding: utf-8 -*-
 from mode import mode
 from dronekit import connect, VehicleMode
-from servo import servo
+#from servo import servo
 import time
-from detect import detect
+#from detect import detect
 from scheduler import Scheduler
 from rocking_wings import rocking_wings
 from led import led
@@ -15,7 +15,7 @@ class copter():
         print("Connecting")
         self.vehicle = connect('/dev/ttyS0', wait_ready=True,baud=57600,rate=2,use_native=True,heartbeat_timeout=-1)
         self.MODE=mode(self.vehicle)
-        self.CAMERA=detect()
+        #self.CAMERA=detect()
         self.stream=stream()
         self.led=led()
         self.ROCK=rocking_wings(self.vehicle)
@@ -36,7 +36,7 @@ class copter():
         print("Connecting")
         self.vehicle = connect('/dev/ttyS0', wait_ready=True,baud=57600,rate=2,use_native=True,heartbeat_timeout=-1)
         self.MODE=mode(self.vehicle)
-        self.CAMERA=detect()
+        #self.CAMERA=detect()
         self.stream=stream()
         self.led=led()
         self.ROCK=rocking_wings(self.vehicle)
@@ -154,7 +154,7 @@ class copter():
         if len(self.ROCK.motion_read_data) > 3:
             self.ROCK.save_motion()
         self.vehicle.close()
-        self.CAMERA.cam.release()
+        #self.CAMERA.cam.release()
         print("Completed")
 
     def output_mode(self):
@@ -175,7 +175,7 @@ if __name__=="__main__":
 
     COPTER=copter()
     COPTER.setup()
-    while(True):#COPTER.CAMERA.cam.isOpened()):
+    while(True): #COPTER.CAMERA.cam.isOpened()):
         try:
             t=time.time()
             flag=COPTER.loop()
