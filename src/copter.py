@@ -158,7 +158,7 @@ class copter():
         print("Completed")
 
     def output_mode(self):
-        mode_list={"CAMERA":self.MODE.CAMERA,"ROCKING_WINGS":self.MODE.ROCKING_WINGS,"RCSAFETY":self.MODE.RCSAFETY,"SERVO":self.MODE.SERVO_MODE}
+        mode_list={"CAMERA":self.MODE.CAMERA,"ROCKING_WINGS":self.MODE.ROCKING_WINGS,"RCSAFETY":self.MODE.RCSAFETY,"SERVO":self.MODE.SERVO}
         output_str="Now mode:\n"
         for i in mode_list:
             if mode_list[i]!=0:

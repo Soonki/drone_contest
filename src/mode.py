@@ -2,7 +2,7 @@
 # -*- coding: utf-8 -*-
 #モードクラス　サーボも込で
 
-from servo import servo
+#from servo import servo
 import time
 
 class mode():
@@ -13,17 +13,15 @@ class mode():
         self.CAMERA=0
         self.RCSAFETY=0
         self.vehicle=vehicle
-        self.motor=servo()
+        #self.motor=servo()
 
     def updateMode(self):
         if int(self.vehicle.channels['6']) > 1800:
             self.SERVO = 1
-        elif int(self.vehicle.channels['6']) > 1300:
-            self.SERVO = 0
         else:
-            self.SERVO = -1
-        self.motor.updateMotor(self.SERVO)
-        self.SERVO_MODE=abs(self.motor.flag)
+            self.SERVO = 0
+        #self.motor.updateMotor(self.SERVO)
+        #self.SERVO_MODE=abs(self.motor.flag)
 
         if int(self.vehicle.channels['7']) > 1800 and self.vehicle.mode.name=='ALT_HOLD':
             self.ROCKING_WINGS = True
@@ -41,7 +39,7 @@ class mode():
             self.RCSAFETY = False
 
     def getMode(self):
-        return self.SERVO_MODE,self.ROCKING_WINGS,self.CAMERA,self.RCSAFETY
+        return self.SERVO,self.ROCKING_WINGS,self.CAMERA,self.RCSAFETY
 
 if __name__ == '__main__':
     # Import DroneKit-Python
