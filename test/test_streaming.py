@@ -14,7 +14,7 @@ class stream():
 	def start(self):
 		#cmd = "sh start_server.sh" 
 		#cmd = "/usr/local/bin/mjpg_streamer -i \"input_raspicam.so -x 640 -y 480 -fps 15 -q 80\" -o \"output_http.so -p 8080 -w /usr/local/share/mjpg-streamer/www\" -b"
-		cmd = "/usr/local/bin/mjpg_streamer -i \"input_raspicam.so -x 640 -y 480 -fps 3 -q 5\" -o \"output_http.so -p 8080 -w /usr/local/share/mjpg-streamer/www\" -b"
+		cmd = "/usr/local/bin/mjpg_streamer -i \"input_raspicam.so -x 640 -y 480 -fps 3 -q 3\" -o \"output_http.so -p 8080 -w /usr/local/share/mjpg-streamer/www\" -b"
         #-bでバックグラウンドで実行
 		#https://qiita.com/ego/items/3d23cda713f29f0dd141
 		cmd = shlex.split(cmd)
