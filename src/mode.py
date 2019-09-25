@@ -17,9 +17,9 @@ class mode():
 
     def updateMode(self):
         if int(self.vehicle.channels['7']) < 1300:
-            self.SERVO = 1
-        else:
             self.SERVO = 0
+        else:
+            self.SERVO = 1
         #self.motor.updateMotor(self.SERVO)
         #self.SERVO_MODE=abs(self.motor.flag)
 

@@ -10,7 +10,7 @@ class stream():
     def start(self):
         if self.camera_flag==0:
             #cmd = "sh start_server.sh"
-            cmd= "/usr/local/bin/mjpg_streamer -i \"input_raspicam.so -x 640 -y 480 -fps 3 -q 10\" -o \"output_http.so -p 8080 -w /usr/local/share/mjpg-streamer/www\" -b"
+            cmd= "/usr/local/bin/mjpg_streamer -i \"input_raspicam.so -x 640 -y 480 -fps 3 -q 5\" -o \"output_http.so -p 8080 -w /usr/local/share/mjpg-streamer/www\" -b"
             #https://qiita.com/ego/items/3d23cda713f29f0dd141
             cmd = shlex.split(cmd)
             ret = subprocess.check_output(cmd)
