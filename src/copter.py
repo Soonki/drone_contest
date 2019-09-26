@@ -70,6 +70,9 @@ class copter():
             self.led.blink_all()
             self.rock_thread.start()
 
+        if self.MODE.ROCKING_WINGS==True and self.ROCK.count > self.ROCK.motion_step:
+            self.led.off_both()
+
         if self.MODE.ROCKING_WINGS==False and self.rock_thread.state==1:
             print("End Rocking Wings")
             self.led.off_both()
